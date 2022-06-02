@@ -519,10 +519,10 @@ def saveSoundsForPhrases(phrases, randomID):
 
     return soundURLs
 
-def mergeSounds(imageCount, randomID):
+def mergeSounds(imageCount, randomID, interval):
     merged = AudioSegment.empty()
     for i in range(0,imageCount):
-        sound = AudioSegment.from_mp3("./sounds/"+ str(i) + randomID + ".mp3")
+        sound = AudioSegment.from_mp3("./sounds/"+ str(i*interval) + randomID + ".mp3")
         print("./sounds/"+ str(i) + randomID +".mp3")
         # clippedDuration = 20
         # if(i == 0):
@@ -593,7 +593,7 @@ def animateText(textIn, userEmail):
         return
     saveSoundsForPhrases(descriptivePhrases, randomID)
     imageCount = 5
-    if (imageCount <= 5):
+    if (len(descriptivePhrases) <= 5):
         imageCount = len(descriptivePhrases)
    
     interval = math.floor(imageCount / 5)
@@ -619,7 +619,7 @@ def animateText(textIn, userEmail):
     animation = generateAnimation(imageCount, 15*imageCount, randomID)
     # animation = generateAnimation(1, 15, randomID)
     print("MERGING SOUNDS")
-    sound = mergeSounds(len(descriptivePhrases), randomID)
+    sound = mergeSounds(imageCount, randomID, interval)
     time.sleep(60)
     # sound = mergeSounds(4, "cc255d3a-df21-11ec-ad9d-c4b301d7c335")
     print("COMBINING SOUNDS")
