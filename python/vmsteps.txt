@@ -1,0 +1,40 @@
+1. Create directory poetryavpython
+2. Upload animateText.py and server.py 
+3. Move both files to poetryavpython
+4. Run commands below in ssh to install requisite dependencies
+
+sudo apt-get update &&
+sudo apt-get install -yq git supervisor python python3-pip python3-distutils &&
+pip install --upgrade pip virtualenv &&
+git clone https://github.com/openai/CLIP &&
+git clone https://github.com/CompVis/taming-transformers.git &&
+pip install ftfy regex tqdm omegaconf pytorch-lightning &&
+pip install kornia &&
+pip install imageio-ffmpeg &&
+pip install einops &&
+curl -L -o vqgan_imagenet_f16_16384.yaml -C - 'https://heibox.uni-heidelberg.de/d/a7530b09fed84f80a887/files/?p=%2Fconfigs%2Fmodel.yaml&dl=1' &&
+curl -L -o vqgan_imagenet_f16_16384.ckpt -C - 'https://heibox.uni-heidelberg.de/d/a7530b09fed84f80a887/files/?p=%2Fckpts%2Flast.ckpt&dl=1' &&
+pip install nltk &&
+pip install git+https://github.com/MTG/freesound-python &&
+pip install pydub &&
+pip install ffmpeg &&
+pip install moviepy &&
+pip install IPython &&
+pip install taming-transformers &&
+pip install git+https://github.com/openai/CLIP &&
+pip install git+https://github.com/CompVis/taming-transformers.git &&
+pip3 install --upgrade protobuf==3.20.0 &&
+pip install ipywidgets &&
+pip install google-api-python-client &&
+pip install oauth2client 
+
+sudo apt install ffmpeg 
+
+
+5. Add these lines below imports in animateText.py
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+python3 ./animateText.py
+6. remove above lines
+
+python3 server.py

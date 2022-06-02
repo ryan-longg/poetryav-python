@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "poetryav-distribution",
+  "private_key_id": "05cb41da365a5b77d9795ce83d528219ee0ef581",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDr9snLSFR2t+R9\n5yu9xMIeXG4iIPKQhcAHBbDzd4Wf9UkoSqZhPvc1XEVsfDF8GhNHEPzGtXVV5f+B\ngDMH0TKBoajm839Sf8JjbjoWVOsGL+9OrdlRe9RMLxDc4VkaQbmkomEAGGVos7in\n9LVAfi50oOl2kvyB2vl3PYzqAZJ7BiGTzx8OFCLEsFVkJAlTvGU9XUl4qqtJp9Q/\nnUNMn0E+o6KGzg8g1B3yE7X+kEk3nMNngHM6ZS3oyWCjuGH2r5+masLGju8c4vTI\npqHiCCFtQt17olk2bf5Y/FkJzkM3/FXcOM5xzQPLd3IeO7kYws+9aBfLzBoZdEi8\niQIl+PrjAgMBAAECggEAIYRy1z56dPSbxGs6XOCJMbaFFFxOvaBUuF/4FH//9J/r\nGN87BqmNhEBg7M8wA5tRQrEoiXH2wqate6/XT9RzkqirwnEzFD0T7SYX99pvGfgO\ny5kekJhWKHjaXIMMB5KaHpx2yoSB9HSW6xCeUGoRX5KzJvCBD/xSnuaY0MKRaTTz\nY9CSwRsalOhVgHNYj6Rjf8odBqXz0UEj8+Qgh2108wkU7yFILGgRzK5DXshh41ZV\nCA01hAj3H7cEmmLZ7kamej1sa1ZEAvkZ9q70+VMWaoUVuDKfatpqF+vsBdslpFEs\nvgQ16qbJlNIW+FyhcGcVQ5ESmjHUy49Gb8wyDviw0QKBgQD9ZlTJDLFI6GU+h0yr\nOJ28qDLacjZUYm4JpFHCBMtbqN8NjnebYZpliF/rjpWI4h6TGTG1z+Gca60F8ZG2\nZle5gR/ZurGFRIPhwbjXSzDnzwQH7wZ5nJb+WeZYt6QGNUi9NIuTqrnU+TQfeTML\nm6kHEiaPmY2geDbJTmNkqElrEQKBgQDuYqd/c6pU3wzZw5ryGKfDkZ19GRAvrHbn\na8JnCP26NE/6p2Gvxhf+0bbCZHkafr7mNyx0et4e5r9Lo0i6pgd/FrTq55LoL7Ui\n+UN/z0E8E5BlgeSUZhzg3dofPJ+X+xWmU4dWNTcQTq+DQHk+jJBsJ9Wfcc6Y3jW6\nrASOJWU+swKBgQCaGZQwG+7oZqPDbeZ7LdgHNcaPP+u4T4+Zf3tU4TOGT2EuTliA\nfs+1NUUX7EMV1mU/kY/AgGY0iOrU9X5mjUCGCHeFIlr4r50AOp4dF5XrMuLBrGOk\nq0zL64IAq9UtDVRp8716FNYkJVTEWyFmysf1C921cG1HjDPNIkWhnhHf8QKBgEa7\nsyOYOHRScseyyKkJM85NyMMzyp+6ttVYHijgfBjiKNEhFVVInBoaM/ZeRajc7tv0\nhxZQ1tOoeB6DZrMrTJIjNK924xpN/ZtRBvxHjP28eF4GOsLlwa/fZDdcj6ZS9EuU\nAVZNF/eYwW9alB9BKiFNeI+E/15QoPSw0fEzm2UNAoGAXk+rOSpK5isUrqKdpRFh\nt9N7d7BS1Yhc9aqjxtCljDHdb/yCLg3qAundcA3m+2GbHIu2GLZpV45WZn179Ukx\ngTDJF1WuA6X4bX5Xs7TYmme9tOIJlAS+31imMl5PiSvccFGBi3VFjhKMRQLNin0M\nc5O9/BxWlUHlM5sOhtVl7ZM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "poetryav-distributor@poetryav-distribution.iam.gserviceaccount.com",
+  "client_id": "113213817330944792970",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/poetryav-distributor%40poetryav-distribution.iam.gserviceaccount.com"
+}

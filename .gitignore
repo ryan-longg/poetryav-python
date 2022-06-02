@@ -1,0 +1,6 @@
+*taming
+*taming-transformers
+*CLIP
+*DS_Store
+vqgan_imagenet_f16_16384.yaml
+vqgan_imagenet_f16_16384.ckpt

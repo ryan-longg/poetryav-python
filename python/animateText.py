@@ -2,6 +2,7 @@
 
 import argparse
 from cgitb import text
+from distutils.command.upload import upload
 import math
 from pathlib import Path
 import sys
@@ -39,7 +40,42 @@ from PIL import ImageFile, Image
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 from urllib.request import urlopen
 
+import smtplib
+from os.path import basename
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import COMMASPACE, formatdate
+
 FRAMES_PER_ANIMATION_SEGMENT = 200
+
+def send_mail(send_from, send_to, subject, text, files=None):
+    assert isinstance(send_to, list)
+
+    msg = MIMEMultipart()
+    msg['From'] = send_from
+    msg['To'] = COMMASPACE.join(send_to)
+    msg['Date'] = formatdate(localtime=True)
+    msg['Subject'] = subject
+
+    msg.attach(MIMEText(text))
+
+    for f in files or []:
+        with open(f, "rb") as fil:
+            part = MIMEApplication(
+                fil.read(),
+                Name=basename(f)
+            )
+        # After the file is closed
+        part['Content-Disposition'] = 'attachment; filename="%s"' % basename(f)
+        msg.attach(part)
+
+
+    smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    smtp.login("poetryav.distributor@gmail.com", "PoetryEmailDistribution42!")
+    smtp.sendmail(send_from, send_to, msg.as_string())
+    smtp.close()
+
 
 def sinc(x):
     return torch.where(x != 0, torch.sin(math.pi * x) / (math.pi * x), x.new_ones([]))
@@ -262,7 +298,7 @@ def translateInputValues(prompt, init_image):
         step_size=0.1,
         cutn=32,
         cut_pow=1.,
-        display_freq=5,
+        display_freq=200,
         seed=seed
     )
     return args
@@ -491,24 +527,50 @@ def mergeSounds(imageCount, randomID):
         # clippedDuration = 20
         # if(i == 0):
         #     clippedDuration = 15
-        clipped = sound[0:(15*1000)]
-
+        clipped = sound[0:(15*1000)].fade_in(3000).fade_out(2000)
         merged += clipped
         # else:
         #     merged.append(clipped, crossfade=5000)
     merged.export("./output/audio" + randomID + ".mp3", format="mp3")
+    print("exiting mergeSounds")
 
 def combineAnimationAndSound(randomID, numImages):
-    my_clip = VideoFileClip("./output/animation"+ randomID +".mp4").subclip(0, numImages*15)
+    my_clip = VideoFileClip("./output/animation" + randomID + ".mp4").subclip(0, numImages*15)
     audio_background = AudioFileClip("./output/audio"+ randomID +".mp3").subclip(0, numImages*15)
     combined = my_clip.set_audio(audio_background)
+    print("combinding clips")
     combined.write_videofile("./output/combined"+ randomID +".mp4",codec='libx264', audio_codec='aac', temp_audiofile='temp-audio.m4a',remove_temp=True)
+    combined.close()
+
+from apiclient.discovery import build
+from apiclient.http import MediaFileUpload
+from oauth2client.service_account import ServiceAccountCredentials
+from httplib2 import Http
+
+def uploadToDrive(filepath, filename):
+    scopes = ['https://www.googleapis.com/auth/drive']
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('poetryav-distribution-05cb41da365a.json', scopes)
+    http_auth = credentials.authorize(Http())
+    drive = build('drive', 'v3', http=http_auth)
+    file_metadata = {
+    'name': filename,
+    'mimeType': 'video/mp4',
+    'parents': ["1wZ4RUQ6jGNfCxAy0T_ihiYFPY8T2p4PE"]
+    }
+    media = MediaFileUpload(filepath,
+                            mimetype='video/mp4',
+                            resumable=True)
+    file = drive.files().create(body=file_metadata, media_body=media, fields='id, webViewLink').execute()
+    fileID = file.get('id')
+    webViewLink = file.get('webViewLink')
+    print("File ID: " + fileID)
+    print("file link: " + str(file.get('webViewLink')))
+    return webViewLink
 
 
 
-def animateText(textIn):
+def animateText(textIn, userEmail):
     randomID = str(uuid.uuid1())
-    print(textIn)
     print("input text: " + textIn + "\n")
     descriptive = getDescriptiveText(textIn)
 
@@ -530,17 +592,20 @@ def animateText(textIn):
         print("please input more descriptive text, we could not make an animation from your input")
         return
     saveSoundsForPhrases(descriptivePhrases, randomID)
-    
     imageCount = 5
     if (imageCount <= 5):
         imageCount = len(descriptivePhrases)
-    
+   
+    interval = math.floor(imageCount / 5)
+    if(interval == 0):
+        interval = 1
+
     for i in range(0, imageCount):
-        prompt = descriptivePhrases[i]
+        prompt = descriptivePhrases[i*interval]
         print("ANIMATING DESCRIPTIVE PHRASE:")
         print(prompt)
         cwd = os.getcwd()
-        pathToLastImage = str(cwd) + "/steps/" + str(i*FRAMES_PER_ANIMATION_SEGMENT) + randomID + ".png"
+        pathToLastImage = str(cwd) + "/steps/" + str(i*FRAMES_PER_ANIMATION_SEGMENT - 1) + randomID + ".png"
         init_image = ""
         if(exists(pathToLastImage)):
             init_image = pathToLastImage
@@ -555,14 +620,21 @@ def animateText(textIn):
     # animation = generateAnimation(1, 15, randomID)
     print("MERGING SOUNDS")
     sound = mergeSounds(len(descriptivePhrases), randomID)
+    time.sleep(60)
     # sound = mergeSounds(4, "cc255d3a-df21-11ec-ad9d-c4b301d7c335")
     print("COMBINING SOUNDS")
     combined = combineAnimationAndSound(randomID, imageCount)
-    # do something with combined 
+    #do something with combined 
+    webViewLink = uploadToDrive("./output/combined"+ randomID +".mp4", "animation" + randomID)
+    send_mail("poetryav.distributor@gmail.com", [userEmail], "Poetry AV", "Hey, thanks for using Dream Machine! Here is a Google Drive link to the audiovisual interpreation of your input text! \n" + webViewLink)
 
     #remove files
+    if(os.path.exists("./progress" + randomID + ".png")): 
+        os.remove("./progress" + randomID + ".png")
     if(os.path.exists("./output/animation" + randomID + ".mp4")): 
      os.remove("./output/animation" + randomID + ".mp4")
+    if(os.path.exists("./output/combined" + randomID + ".mp4")): 
+     os.remove("./output/combined" + randomID + ".mp4")
     if(os.path.exists("./output/audio" + randomID + ".mp3")): 
      os.remove("./output/audio" + randomID + ".mp3")
     if(os.path.exists("./progress" + randomID + ".png")): 
@@ -575,4 +647,6 @@ def animateText(textIn):
     for i in range(0, imageCount*FRAMES_PER_ANIMATION_SEGMENT):
         if(os.path.exists("./steps/" + str(i) + randomID + ".png")): 
             os.remove("./steps/" + str(i) + randomID + ".png")
-    
+
+
+#animateText("the underwater city gave ultra nostalgia", "peachy.keen.dream.machine@gmail.com")

@@ -11,14 +11,21 @@ import multiprocessing
 from animateText import *
 import uuid
 
-hostName = "localhost"
-serverPort = 3030
 
-def childProcess(textIn):
+hostName = "0.0.0.0"
+serverPort = 8080
+
+def childProcess(inputObject):
+    jsonObject = json.loads(inputObject)
+    textIn = jsonObject["value"]
+    email = jsonObject["email"]
+    print("RECEIVED FROM WEBSITE")
+    print(textIn)
+    print(email)
     # print("child process sleeping")
     # time.sleep(10.0)
     # print("child process waking after 10 seconds")
-    animateText(textIn)
+    animateText(textIn, email)
 
 class MyServer(BaseHTTPRequestHandler):
     
@@ -51,6 +58,7 @@ class MyServer(BaseHTTPRequestHandler):
                 print("Animating object: {}".format(obj))
                 P = multiprocessing.Process(target=childProcess, args=(obj["input"],))
                 print("Starting Child Process")
+                P.daemon=True
                 P.start()
                 self.send_response(HTTPStatus.OK)
                 self.end_headers()
